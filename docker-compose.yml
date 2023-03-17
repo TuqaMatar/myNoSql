@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  bootstrapping-node:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ROLE=BOOTSTRAPPING
+    networks:
+      - node-network
+  node-1:
+    build: .
+    environment:
+      - NODE_ROLE=NODE
+      - NODE_ID=node-1
+      - BOOTSTRAPPING_NODE_URL=http://bootstrapping-node:8080
+    networks:
+      - node-network
+  node-2:
+    build: .
+    environment:
+      - NODE_ROLE=NODE
+      - NODE_ID=node-2
+      - BOOTSTRAPPING_NODE_URL=http://bootstrapping-node:8080
+    networks:
+      - node-network
+  # Add more nodes as needed
+
+networks:
+  node-network:
+    driver: bridge
