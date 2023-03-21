@@ -1,18 +1,89 @@
 package com.example.myNoSql.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 
 public class Node {
     private String id;
+    private String name ;
     private String ipAddress;
+    private int port;
+    private List<User> users;
+
     private Map<String, Database> databases;
+    private Map<String , String> userNamePasswordMap;
+
 
     public Node(String id, String ipAddress) {
         this.id = id;
         this.ipAddress = ipAddress;
         this.databases = new HashMap<>();
+        this.userNamePasswordMap = new HashMap<>();
+        this.users = new ArrayList<>();
     }
 
-    // Getters, setters, and other methods
+    public Node() {
+        this.users = new ArrayList<>();
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+       // userNamePasswordMap.put(user.getUsername(),user.getPassword());
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public Map<String, Database> getDatabases() {
+        return databases;
+    }
+
+    public void setDatabases(Map<String, Database> databases) {
+        this.databases = databases;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+
+    public void removeUser(User user) {
+        users.remove(user);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

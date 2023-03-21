@@ -1,15 +1,14 @@
 package com.example.myNoSql.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Schema {
-    private String id;
-    private JsonNode schemaDefinition;
+    private JSONObject jsonSchema;
 
-    public Schema(String id, JsonNode schemaDefinition) {
-        this.id = id;
-        this.schemaDefinition = schemaDefinition;
+    public Schema(String jsonSchemaString) throws JSONException {
+        this.jsonSchema = new JSONObject(jsonSchemaString);
     }
 
-    // Getters, setters, and other methods
+
 }

@@ -1,31 +1,50 @@
 version: '3.8'
-services:
-  bootstrapping-node:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - NODE_ROLE=BOOTSTRAPPING
-    networks:
-      - node-network
-  node-1:
-    build: .
-    environment:
-      - NODE_ROLE=NODE
-      - NODE_ID=node-1
-      - BOOTSTRAPPING_NODE_URL=http://bootstrapping-node:8080
-    networks:
-      - node-network
-  node-2:
-    build: .
-    environment:
-      - NODE_ROLE=NODE
-      - NODE_ID=node-2
-      - BOOTSTRAPPING_NODE_URL=http://bootstrapping-node:8080
-    networks:
-      - node-network
-  # Add more nodes as needed
 
+services:
+  bootstrap-node:
+    build: .
+    image: my-no-sql
+    container_name: bootstrap-node
+    ports:
+      - "8081:8080"
+    environment:
+      - NODE_TYPE=BOOTSTRAP
+    volumes:
+      - bootstrap-data:/data
+
+  node-1:
+    image: my-no-sql
+    networks:
+      - my_network
+    container_name: node-1
+    ports:
+      - "8082:8080"
+    environment:
+      - NODE_TYPE=NODE
+      - BOOTSTRAP_NODE_HOST=bootstrap-node
+      - BOOTSTRAP_NODE_PORT=8080
+    volumes:
+      - node1-data:/data
+
+  node-2:
+    image: my-no-sql
+    networks:
+      - my_network
+    container_name: node-2
+    ports:
+      - "8083:8080"
+    environment:
+      - NODE_TYPE=NODE
+      - BOOTSTRAP_NODE_HOST=bootstrap-node
+      - BOOTSTRAP_NODE_PORT=8080
+    volumes:
+      - node2-data:/data
 networks:
-  node-network:
+  my_network:
     driver: bridge
+
+volumes:
+  bootstrap-data:
+  node1-data:
+  node2-data:
+

@@ -1,47 +1,65 @@
 package com.example.myNoSql.controller;
 
+import com.example.myNoSql.BootStrapProperties;
 import com.example.myNoSql.model.Node;
 import com.example.myNoSql.model.User;
-import com.example.myNoSql.service.BootStrappingNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping("/bootstrapping-node")
 public class BootStrappingNodeController {
-    private final BootStrappingNodeService bootstrappingNodeService;
 
     @Autowired
-    public BootStrappingNodeController(BootStrappingNodeService bootstrappingNodeService) {
-        this.bootstrappingNodeService = bootstrappingNodeService;
+    private BootStrapProperties bootstrapProperties;
+
+    private AtomicInteger nodeCounter = new AtomicInteger(0);
+
+    @PostMapping("/register")
+    public ResponseEntity<User> registerUser(@RequestBody User newUser) {
+        List<User> users = bootstrapProperties.getUsers();
+        List<Node> nodes = bootstrapProperties.getNodes();
+        // Check if the username is already in use
+        for (User user : users) {
+            if (user.getUsername().equals(newUser.getUsername())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(null);
+            }
+        }
+        // Assign the new user to a node using round-robin load balancing
+        Node assignedNode = nodes.get(nodeCounter.getAndIncrement() % nodes.size());
+        // assignedNode.addUser(newUser);
+
+        newUser.setAssignedNode(assignedNode);
+
+        // Add the new user to the list of registered users
+        users.add(newUser);
+        return ResponseEntity.ok(newUser);
     }
 
-
-    @GetMapping("/ping-nodes")
-    public ResponseEntity<Map<String, Boolean>> pingNodes() {
-        Map<String, Boolean> pingResults = new HashMap<>();
-
-        for (String nodeUrl : bootstrappingNodeService.getNodeUrls()) {
-            boolean pingResult = bootstrappingNodeService.pingNode(nodeUrl);
-            pingResults.put(nodeUrl, pingResult);
+    @GetMapping("/users/{username}")
+    public ResponseEntity<Node> getUserNode(@PathVariable String username) {
+        List<User> users = bootstrapProperties.getUsers();
+        // Find the user by username
+        User foundUser = null;
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                foundUser = user;
+                break;
+            }
         }
 
-        return ResponseEntity.ok(pingResults);
+        if (foundUser == null) {
+            // Return an HTTP 404 (Not Found) status if the user is not found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        // Return the assigned node if the user is found
+        Node assignedNode = foundUser.getAssignedNode();
+        return ResponseEntity.ok(assignedNode);
     }
-
-//    @PostMapping("/register")
-//    public ResponseEntity<User> registerUser(@RequestBody UserRegistrationRequest request) {
-//        // Use bootstrappingNodeService to register a new user and return the user object
-//    }
-//
-//    @GetMapping("/assigned-node/{userId}")
-//    public ResponseEntity<Node> getAssignedNode(@PathVariable String userId) {
-//        // Use bootstrappingNodeService to get the assigned node for the given user ID
-//    }
-
-    // Other API endpoints for bootstrapping node management
 }

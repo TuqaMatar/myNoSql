@@ -5,7 +5,25 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private String assignedNodeId;
+    private Node assignedNode;
+
+    public User() {
+    }
+
+    public User(String id, String username, String password, Node assignedNode) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.assignedNode = assignedNode;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -23,14 +41,11 @@ public class User {
         this.password = password;
     }
 
-    public String getAssignedNodeId() {
-        return assignedNodeId;
+    public Node getAssignedNode() {
+        return assignedNode;
     }
 
-    public void setAssignedNodeId(String assignedNodeId) {
-        this.assignedNodeId = assignedNodeId;
+    public void setAssignedNode(Node assignedNode) {
+        this.assignedNode = assignedNode;
     }
-
-
-    // Constructors, getters, and setters
 }

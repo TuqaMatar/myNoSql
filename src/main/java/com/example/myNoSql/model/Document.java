@@ -11,5 +11,19 @@ public class Document {
         this.data = data;
     }
 
-    // Getters, setters, and other methods
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public JsonNode getData() {
+        return data;
+    }
+
+    public void setData(JsonNode data) {
+        this.data = data;
+    }
 }

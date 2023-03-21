@@ -1,0 +1,18 @@
+bootstrap:
+  nodeIPs:
+    - "192.168.1.1"
+    - "192.168.1.2"
+  users:
+    - username: user1
+      password: pass1
+      node: node1
+    - username: user2
+      password: pass2
+      node: node2
+  nodes:
+    - name: node1
+      ipAddress: 192.168.1.1
+      port: 8081
+    - name: node2
+      ipAddress: 192.168.1.2
+      port: 8082
