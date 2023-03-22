@@ -7,10 +7,12 @@ import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.service.DatabaseService;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,17 +28,11 @@ public class DatabaseController {
     public DatabaseController() {
     }
 
-    @PostMapping("/addDocument")
-    public void addDocument(@RequestBody CreateDocumentRequest createDocumentRequest) {
-        String databaseName = createDocumentRequest.getDatabaseName();
-        Document document = createDocumentRequest.getDocument();
-        databaseService.addDocumentToDatabase(databaseName, document);
-    }
-
     @PostMapping("/createDatabase")
     public void createDatabase(@RequestBody CreateDatabaseRequest createDatabaseRequest) {
         String dbName = createDatabaseRequest.getName();
         JsonNode schema = createDatabaseRequest.getSchema();
+
         databaseService.createDatabase(dbName, schema);
     }
 

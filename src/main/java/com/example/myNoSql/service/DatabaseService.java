@@ -4,6 +4,10 @@ import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+import com.github.fge.jsonschema.core.report.ProcessingReport;
+import com.github.fge.jsonschema.main.JsonSchema;
+import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -11,9 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DatabaseService {
@@ -29,6 +31,7 @@ public class DatabaseService {
     }
 
     public void createDatabase(String dbName , JsonNode schema) {
+
         Database newDatabase = new Database(dbName , schema);
         databases.add(newDatabase);
         saveDatabaseToDisk(newDatabase);
@@ -68,7 +71,20 @@ public class DatabaseService {
         if (db == null) {
             throw new RuntimeException("Database not found");
         }
-        db.addDocument(document);
+        //validate against schema
+        JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
+
+        try{
+            JsonSchema jsonSchema = factory.getJsonSchema(db.getSchema());
+            ProcessingReport report = jsonSchema.validate(document.getData());
+            if (report.isSuccess()) {
+                db.addDocument(document);
+            } else {
+                System.out.println("Document validation failed:");
+                System.out.println(report);}
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public Database findDatabaseByName(String databaseName) {
