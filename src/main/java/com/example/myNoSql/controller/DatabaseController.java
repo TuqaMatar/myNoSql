@@ -41,10 +41,20 @@ public class DatabaseController {
         return databaseService.getDatabases();
     }
 
-    @PostMapping("/{databaseName}/addDocument")
-    public void addDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
+    // CRUD OPERATIONS ON DOCUMENTS
+
+    @PostMapping("/{databaseName}/createDocument")
+    public void createDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
         Document document = new Document(jsonContent);
         databaseService.addDocumentToDatabase(databaseName, document);
     }
-    // Add more methods for other CRUD operations on databases and documents
+
+
+    @PostMapping("/{databaseName}/deleteDocument")
+    public void deleteDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
+        Document document = new Document(jsonContent);
+        databaseService.deleteDocumentFromDatabase(databaseName, document);
+    }
+
+
 }

@@ -1,36 +1,44 @@
 package com.example.myNoSql.model;
-import com.example.myNoSql.DocumentStore;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.print.Doc;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 public class Database {
     private String name;
     private JsonNode schema;
-    List<Document> documents;
-    private HashMap<Integer, Document> idIndex;
-    private HashMap<String, TreeMap<Object, List<Document>>> propertyIndexes;
+    private TreeMap<Integer, Document> documents;
 
     public Database() {
     }
 
-    public  Database (String name , JsonNode schema)
-    {
+    public Database(String name, JsonNode schema) {
         this.schema = schema;
-        this.name=name;
-        documents = new ArrayList<>();
-        idIndex = new HashMap<>();
-        propertyIndexes = new HashMap<>();
+        this.name = name;
+        documents = new TreeMap<>();
     }
 
     public List<Document> getDocuments() {
-        return documents;
+        return documents.values().stream().collect(toList());
+    }
+    public void addDocument(Document document) {
+        System.out.println(document.getData().hashCode());
+        documents.put(document.getData().hashCode(), document);
     }
 
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
+    public Document getDocument(int id) {
+        return documents.get(id);
+    }
+
+    public void updateDocument(Document document) {
+        documents.put(document.getId(), document);
+    }
+
+    public void deleteDocument(Document document) {
+        System.out.println(document.getData().hashCode());
+        documents.remove(document.getData().hashCode());
     }
 
     public String getName() {
@@ -41,7 +49,7 @@ public class Database {
         this.name = name;
     }
 
-    public JsonNode  getSchema() {
+    public JsonNode getSchema() {
         return schema;
     }
 
@@ -49,13 +57,4 @@ public class Database {
         this.schema = schema;
     }
 
-
-    public void deleteDocument(String id) {
-        documents.remove(id);
-    }
-
-    public void addDocument(Document document) {
-        idIndex.put(document.getId(), document);
-        documents.add(document);
-    }
 }

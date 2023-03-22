@@ -1,1 +1,1 @@
-{"name":"bookDb","schema":{"$schema":"http://json-schema.org/draft-07/schema#","title":"Book","type":"object","properties":{"title":{"type":"string"},"author":{"type":"string"},"year":{"type":"integer"},"genre":{"type":"string"}},"required":["title","author","year","genre"]},"documents":[]}
+{

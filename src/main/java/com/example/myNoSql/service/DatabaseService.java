@@ -31,10 +31,9 @@ public class DatabaseService {
     }
 
     public void createDatabase(String dbName , JsonNode schema) {
-
         Database newDatabase = new Database(dbName , schema);
         databases.add(newDatabase);
-        saveDatabaseToDisk(newDatabase);
+        //saveDatabaseToDisk(newDatabase);
     }
 
 
@@ -85,6 +84,17 @@ public class DatabaseService {
         } catch (ProcessingException e) {
             e.printStackTrace();
         }
+    }
+
+    public void deleteDocumentFromDatabase ( String databaseName , Document document)
+    {
+        Database db = findDatabaseByName(databaseName);
+        if(db == null)
+        {
+            throw new RuntimeException("Database not found");
+        }
+        db.deleteDocument(document);
+
     }
 
     public Database findDatabaseByName(String databaseName) {
