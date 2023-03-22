@@ -2,6 +2,7 @@ package com.example.myNoSql.controller;
 
 import com.example.myNoSql.CreateDatabaseRequest;
 import com.example.myNoSql.CreateDocumentRequest;
+import com.example.myNoSql.DocumentStore;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.service.DatabaseService;
@@ -19,6 +20,8 @@ public class DatabaseController {
 
     @Autowired
     private DatabaseService databaseService;
+
+    private DocumentStore documentStore;
 
     public DatabaseController() {
     }
@@ -44,7 +47,7 @@ public class DatabaseController {
 
     @PostMapping("/{databaseName}/addDocument")
     public void addDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
-        Document document = new Document(UUID.randomUUID().toString(), jsonContent);
+        Document document = new Document(jsonContent);
         databaseService.addDocumentToDatabase(databaseName, document);
     }
     // Add more methods for other CRUD operations on databases and documents

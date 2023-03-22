@@ -2,20 +2,24 @@ package com.example.myNoSql.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class Document {
-    private String id;
-    private JsonNode data;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    public Document(String id, JsonNode data) {
-        this.id = id;
+public class Document {
+    private Integer id;
+    private JsonNode data;
+    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+
+
+    public Document(JsonNode data) {
+        this.id = ID_GENERATOR.incrementAndGet();
         this.data = data;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -26,4 +30,6 @@ public class Document {
     public void setData(JsonNode data) {
         this.data = data;
     }
+
+
 }

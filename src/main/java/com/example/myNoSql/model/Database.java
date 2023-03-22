@@ -1,11 +1,16 @@
 package com.example.myNoSql.model;
+import com.example.myNoSql.DocumentStore;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import javax.print.Doc;
 import java.util.*;
 
 public class Database {
     private String name;
     private JsonNode schema;
     List<Document> documents;
+    private HashMap<Integer, Document> idIndex;
+    private HashMap<String, TreeMap<Object, List<Document>>> propertyIndexes;
 
     public Database() {
     }
@@ -15,6 +20,8 @@ public class Database {
         this.name=name;
         this.schema = schema;
         documents = new ArrayList<>();
+        idIndex = new HashMap<>();
+        propertyIndexes = new HashMap<>();
     }
 
     public List<Document> getDocuments() {
@@ -47,6 +54,7 @@ public class Database {
     }
 
     public void addDocument(Document document) {
+        idIndex.put(document.getId(), document);
         documents.add(document);
     }
 }
