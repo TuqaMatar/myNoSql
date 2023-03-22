@@ -56,5 +56,13 @@ public class DatabaseController {
         databaseService.deleteDocumentFromDatabase(databaseName, document);
     }
 
+    @PostMapping("/{databaseName}/updateDocument/{documentId}")
+    public void updateDocument(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId,
+                               @RequestBody JsonNode jsonContent) {
+        Document newDocument = new Document(jsonContent);
+
+        databaseService.updateDocumentFromDatabase(databaseName, documentId , newDocument);
+    }
+
 
 }

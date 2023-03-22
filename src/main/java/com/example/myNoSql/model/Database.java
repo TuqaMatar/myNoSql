@@ -25,19 +25,19 @@ public class Database {
     }
     public void addDocument(Document document) {
         System.out.println(document.getData().hashCode());
-        documents.put(document.getData().hashCode(), document);
+        documents.put(document.getId(), document);
     }
 
     public Document getDocument(int id) {
         return documents.get(id);
     }
 
-    public void updateDocument(Document document) {
-        documents.put(document.getId(), document);
+    public void updateDocument(Integer documentId,Document document) {
+        documents.remove(documentId);
+        documents.put(documentId, document);
     }
 
     public void deleteDocument(Document document) {
-        System.out.println(document.getData().hashCode());
         documents.remove(document.getData().hashCode());
     }
 

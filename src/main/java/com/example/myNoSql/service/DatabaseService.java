@@ -97,6 +97,16 @@ public class DatabaseService {
 
     }
 
+    public void updateDocumentFromDatabase ( String databaseName ,Integer documentId , Document document)
+    {
+        Database db = findDatabaseByName(databaseName);
+        if(db == null)
+        {
+            throw new RuntimeException("Database not found");
+        }
+        db.updateDocument(documentId , document);
+
+    }
     public Database findDatabaseByName(String databaseName) {
         for (Database db : databases) {
             if (db.getName().equals(databaseName)) {
@@ -105,8 +115,9 @@ public class DatabaseService {
         }
         return null;
     }
-
     public List<Database> getDatabases() {
         return databases;
     }
+
+
 }
