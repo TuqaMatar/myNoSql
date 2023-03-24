@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.xml.bind.ValidationException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/db")
@@ -29,39 +30,39 @@ public class DatabaseController {
     }
 
     @PostMapping("/createDatabase")
-    public void createDatabase(@RequestBody CreateDatabaseRequest createDatabaseRequest) {
+    public CompletableFuture<Void> createDatabase(@RequestBody CreateDatabaseRequest createDatabaseRequest) {
         String dbName = createDatabaseRequest.getName();
         JsonNode schema = createDatabaseRequest.getSchema();
 
-        databaseService.createDatabase(dbName, schema);
+        return databaseService.createDatabase(dbName, schema);
     }
 
     @GetMapping("/getDatabases")
-    public List<Database> getDatabases() {
+    public CompletableFuture<List<Database>> getDatabases() {
         return databaseService.getDatabases();
     }
 
     // CRUD OPERATIONS ON DOCUMENTS
 
     @PostMapping("/{databaseName}/createDocument")
-    public void createDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
+    public CompletableFuture<Void> createDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
         Document document = new Document(jsonContent);
-        databaseService.addDocumentToDatabase(databaseName, document);
+        return databaseService.addDocumentToDatabase(databaseName, document);
     }
 
 
     @PostMapping("/{databaseName}/deleteDocument")
-    public void deleteDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
+    public CompletableFuture<Void> deleteDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent) {
         Document document = new Document(jsonContent);
-        databaseService.deleteDocumentFromDatabase(databaseName, document);
+        return databaseService.deleteDocumentFromDatabase(databaseName, document);
     }
 
     @PostMapping("/{databaseName}/updateDocument/{documentId}")
-    public void updateDocument(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId,
-                               @RequestBody JsonNode jsonContent) {
+    public CompletableFuture<Void> updateDocument(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId,
+                                                  @RequestBody JsonNode jsonContent) {
         Document newDocument = new Document(jsonContent);
 
-        databaseService.updateDocumentFromDatabase(databaseName, documentId , newDocument);
+        return databaseService.updateDocumentFromDatabase(databaseName, documentId, newDocument);
     }
 
 
