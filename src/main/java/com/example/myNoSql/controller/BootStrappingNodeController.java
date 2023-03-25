@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
@@ -35,8 +36,8 @@ public class BootStrappingNodeController {
         // assignedNode.addUser(newUser);
 
         newUser.setAssignedNode(assignedNode);
+        newUser.setId(UUID.randomUUID().toString());
 
-        // Add the new user to the list of registered users
         users.add(newUser);
         return ResponseEntity.ok(newUser);
     }
@@ -54,11 +55,9 @@ public class BootStrappingNodeController {
         }
 
         if (foundUser == null) {
-            // Return an HTTP 404 (Not Found) status if the user is not found
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        // Return the assigned node if the user is found
         Node assignedNode = foundUser.getAssignedNode();
         return ResponseEntity.ok(assignedNode);
     }

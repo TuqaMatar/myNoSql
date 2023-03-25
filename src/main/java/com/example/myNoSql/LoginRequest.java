@@ -4,9 +4,6 @@ public class LoginRequest {
     private String username;
     private String password;
 
-    // Add constructors, getters, and setters as needed
-
-
     public String getUsername() {
         return username;
     }

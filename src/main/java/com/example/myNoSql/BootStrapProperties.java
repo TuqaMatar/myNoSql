@@ -15,7 +15,7 @@ public class BootStrapProperties {
     private List<User> users;
     private List<Node> nodes;
     private List<String> nodeIPs;
-
+    private List<Integer> ports ;
     // Getters and setters
 
 
@@ -41,5 +41,13 @@ public class BootStrapProperties {
 
     public void setNodes(List<Node> nodes) {
         this.nodes = nodes;
+    }
+
+    public List<Integer> getPorts() {
+        return ports;
+    }
+
+    public void setPorts(List<Integer> ports) {
+        this.ports = ports;
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 
 @SpringBootApplication
 public class MyNoSqlApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(MyNoSqlApplication.class, args);
 	}
@@ -28,7 +27,6 @@ public class MyNoSqlApplication {
 		List<String> nodeIpAddresses = Arrays.asList("192.168.1.2", "192.168.1.3", "192.168.1.4"); // Replace with actual IP addresses
 		return new BootStrappingNode(nodeIpAddresses);
 	}
-
 	@Bean
 	public AuthService authService() {
 		return new AuthService();
