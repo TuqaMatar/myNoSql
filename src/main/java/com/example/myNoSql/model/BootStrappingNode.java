@@ -14,7 +14,7 @@ public class BootStrappingNode {
     public BootStrappingNode(List<String> nodeIpAddresses) {
         nodes = new ArrayList<>();
         for (int i = 0; i < nodeIpAddresses.size(); i++) {
-            Node node = new Node(String.valueOf(i), nodeIpAddresses.get(i));
+            Node node = new Node( nodeIpAddresses.get(i));
             nodes.add(node);
         }
         this.users = new HashMap<>();

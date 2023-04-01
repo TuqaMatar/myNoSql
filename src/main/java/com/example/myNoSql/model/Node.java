@@ -7,7 +7,6 @@ import java.util.Map;
 
 
 public class Node {
-    private String id;
     private String name ;
     private String ipAddress;
     private int port;
@@ -17,8 +16,7 @@ public class Node {
     private Map<String , String> userNamePasswordMap;
 
 
-    public Node(String id, String ipAddress) {
-        this.id = id;
+    public Node( String ipAddress) {
         this.ipAddress = ipAddress;
         this.databases = new HashMap<>();
         this.userNamePasswordMap = new HashMap<>();
@@ -61,14 +59,6 @@ public class Node {
 
     public void removeUser(User user) {
         users.remove(user);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public int getPort() {

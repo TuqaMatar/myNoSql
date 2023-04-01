@@ -24,10 +24,16 @@ public class Database {
     public List<Document> getDocuments() {
         return documents.values().stream().collect(toList());
     }
+    public TreeMap<Integer,Document> getDocumentMap (){
+        return documents;
+    }
 
     public void addDocument(Document document) {
         System.out.println(document.getData().hashCode());
-        documents.put(document.getId(), document);
+        if(!documents.containsKey(document.getId())){
+            documents.put(document.getId(), document);
+        }
+
     }
 
     public Document getDocument(int id) {
@@ -54,10 +60,11 @@ public class Database {
 
     public boolean updateDocumentIfVersionsMatch(Integer documentId, Document document) {
         synchronized (this) {
-            if (Objects.equals(document.getVersion(), documents.get(documentId).getVersion())) {
+            if (Objects.equals(document.getVersion().get(), documents.get(documentId).getVersion().get())) {
                 documents.remove(documentId);
-                documents.put(documentId, document);
-                documents.get(documentId).getAtomicVersion().incrementAndGet();
+                documents.put(document.getId(), document);
+                documents.get(documentId).getVersion().incrementAndGet();
+
                 return true;
             }
         }
@@ -65,8 +72,8 @@ public class Database {
     }
 
 
-    public void deleteDocument(Document document) {
-        documents.remove(document.getData().hashCode());
+    public void deleteDocument(Integer id ) {
+        documents.remove(id);
     }
 
     public String getName() {
@@ -85,4 +92,15 @@ public class Database {
         this.schema = schema;
     }
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Database)
+        {
+            Database c = (Database) o;
+            if ( this.name.equals(c.name) )
+                return true;
+        }
+        return false;
+    }
 }

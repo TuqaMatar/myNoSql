@@ -5,12 +5,12 @@ public class User {
     private String id;
     private String username;
     private String password;
-    private Node assignedNode;
-
+    private String assignedNode;
+    private Integer port ;
     public User() {
     }
 
-    public User(String id, String username, String password, Node assignedNode) {
+    public User(String id, String username, String password, String assignedNode) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -41,11 +41,19 @@ public class User {
         this.password = password;
     }
 
-    public Node getAssignedNode() {
+    public String getAssignedNode() {
         return assignedNode;
     }
 
-    public void setAssignedNode(Node assignedNode) {
+    public void setAssignedNode(String assignedNode) {
         this.assignedNode = assignedNode;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 }

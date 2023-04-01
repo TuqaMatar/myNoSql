@@ -21,7 +21,5 @@ public class NodeService {
         return nodes.get(nodeId);
     }
 
-    public void addNode(Node node) {
-        nodes.put(node.getId(), node);
-    }
+
 }

@@ -18,23 +18,23 @@ import java.util.Map;
 @Service
 public class BootStrappingNodeService {
     private final RestTemplate restTemplate;
-    private Map<String ,Node> nodes;
 
     @Autowired
     public BootStrappingNodeService(/* Config or list of Nodes */) {
         restTemplate = new RestTemplate();
-        nodes = new HashMap<>();
     }
 
-    public Node registerNode(Node node) {
-        if (!nodes.containsKey(node.getId())) {
-            nodes.put(node.getId(), node);
+    public void registerUserToNode (User user , Node node){
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://" + node.getName() + ":" + "8080"+ "/api/nodes/addUser";
+            System.out.println("Registering to " + url);
+            restTemplate.postForEntity(url, user, Void.class);
+        } catch (Exception e) {
+            // Log the error
+            e.printStackTrace();
         }
-        return node;
-    }
 
-    public List<Node> getRegisteredNodes() {
-        return new ArrayList<>(nodes.values());
     }
 
 }

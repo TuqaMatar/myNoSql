@@ -8,6 +8,7 @@ public class Document {
     private Integer id;
     private AtomicInteger version;
     private JsonNode data;
+    private Node affinityNode;
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
 
     public Document(JsonNode data) {
@@ -16,6 +17,8 @@ public class Document {
         this.version = new AtomicInteger(0);
 
     }
+    public Document(){}
+
 
     public Integer getId() {
         return id;
@@ -29,19 +32,16 @@ public class Document {
         return data;
     }
 
-    public void setData(JsonNode data) {
-        this.data = data;
-    }
-
-
-    public Integer getVersion() {
-        return version.get();
-    }
-    public AtomicInteger getAtomicVersion() {
+    public AtomicInteger getVersion() {
         return version;
     }
 
-    public void setVersion(AtomicInteger version) {
-        this.version = version;
+
+    public Node getAffinityNode() {
+        return affinityNode;
+    }
+
+    public void setAffinityNode(Node affinityNode) {
+        this.affinityNode = affinityNode;
     }
 }

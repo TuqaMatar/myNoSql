@@ -10,12 +10,12 @@ bootstrap:
       password: pass2
       node: node2
   nodes:
-    - name: node1
+    - name: node-1
       ipAddress: 192.168.1.1
-      port: 8081
-    - name: node2
-      ipAddress: 192.168.1.2
       port: 8082
+    - name: node-2
+      ipAddress: 192.168.1.2
+      port: 8083
   ports:
     - 8082
     - 8083
