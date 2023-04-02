@@ -11,6 +11,7 @@ import com.example.myNoSql.service.FileStorageService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -135,6 +136,21 @@ public class DatabaseController {
             broadcastingService.broadcastDeleteDocumentToAllContainers(databaseName, documentId);
         }
         return databaseService.deleteDocumentFromDatabase(databaseName, documentId);
+    }
+
+
+
+    @DeleteMapping("/deleteDatabase/{databaseName}")
+    public ResponseEntity<Void> deleteDatabase(@PathVariable("databaseName") String databaseName , @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast) {
+
+        if (broadcast) {
+            broadcastingService.broadcastDeleteDatabaseToAllContainers(databaseName);
+        }
+        if (databaseService.deleteDatabase(databaseName)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 

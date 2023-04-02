@@ -16,8 +16,18 @@ public class BootStrapProperties {
     private List<Node> nodes;
     private List<String> nodeIPs;
     private List<Integer> ports ;
+    private Admin admin;
+
     // Getters and setters
 
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
 
     public List<String> getNodeIPs() {
         return nodeIPs;

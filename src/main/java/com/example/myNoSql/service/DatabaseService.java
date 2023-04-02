@@ -24,10 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,12 +52,10 @@ public class DatabaseService {
     @PostConstruct
     public void init() {
         databases = fileStorageService.loadDatabasesFromFileSystem();
-        for (Database  database: databases)
-        {
+        for (Database database : databases) {
             List<Document> documents = fileStorageService.loadDocumentsFromDirectory(database.getName());
             System.out.println(documents);
-            for(Document document : documents)
-            {
+            for (Document document : documents) {
                 database.getDocumentMap().put(document.getId(), document);
             }
         }
@@ -139,7 +137,7 @@ public class DatabaseService {
         }
 
         db.deleteDocument(documentId);
-        fileStorageService.deleteDocumentFromFile(databaseName,documentId);
+        fileStorageService.deleteDocumentFromFile(databaseName, documentId);
 
         return CompletableFuture.completedFuture(null);
     }
@@ -182,5 +180,33 @@ public class DatabaseService {
         });
     }
 
+
+    public boolean deleteDatabase(String databaseName) {
+        // Check if the database exists
+        Database database = findDatabaseByName(databaseName);
+        if (database == null) {
+            return false;
+        }
+
+        // Delete all the documents associated with the database
+        for (Document document : database.getDocumentMap().values()) {
+            deleteDocumentFromDatabase(databaseName, document.getId());
+        }
+
+        // Remove the database from the databases map
+        databases.remove(database);
+
+        // Delete the database directory and its contents (documents, schema, etc.)
+        try {
+            Files.walk(Paths.get("app/data", databaseName))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 
 }

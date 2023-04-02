@@ -16,6 +16,12 @@ bootstrap:
     - name: node-2
       ipAddress: 192.168.1.2
       port: 8083
+    - name: boot-strap-node
+      port: 8081
   ports:
     - 8082
     - 8083
+
+admin:
+  username: admin
+  password: mysecretpassword

@@ -107,4 +107,24 @@ public class BroadcastingService {
             });
         }
     }
+
+    public void broadcastDeleteDatabaseToAllContainers(String databaseName) {
+        Map<String, Integer> serviceNameToPort = new HashMap<>();
+        serviceNameToPort.put("node-1", 8080);
+        serviceNameToPort.put("node-2", 8080);
+        ExecutorService executor = Executors.newFixedThreadPool(serviceNameToPort.size());
+        for (Map.Entry<String, Integer> entry : serviceNameToPort.entrySet()) {
+            executor.submit(() -> {
+                try {
+                    RestTemplate restTemplate = new RestTemplate();
+                    String url = "http://" + entry.getKey() + ":" + entry.getValue() + "/api/db/deleteDatabase/"+databaseName+"?broadcast=false";
+                    System.out.println(url);
+                    restTemplate.postForObject(url, null ,Void.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        executor.shutdown();
+    }
 }
