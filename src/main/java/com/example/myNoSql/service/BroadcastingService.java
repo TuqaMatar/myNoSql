@@ -119,7 +119,7 @@ public class BroadcastingService {
                     RestTemplate restTemplate = new RestTemplate();
                     String url = "http://" + entry.getKey() + ":" + entry.getValue() + "/api/db/deleteDatabase/"+databaseName+"?broadcast=false";
                     System.out.println(url);
-                    restTemplate.postForObject(url, null ,Void.class);
+                    restTemplate.delete(url, null ,Void.class);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

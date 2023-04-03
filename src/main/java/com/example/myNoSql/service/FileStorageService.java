@@ -1,9 +1,11 @@
 package com.example.myNoSql.service;
 
+import com.example.myNoSql.InvertedIndex;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.Constants;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.User;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FileStorageService {
@@ -47,8 +48,6 @@ public class FileStorageService {
             e.printStackTrace();
         }
     }
-
-
 
     public void saveDocumentToFile(String databaseName, Document document) {
         Path dbPath = Paths.get(basePath, databaseName);
@@ -86,8 +85,6 @@ public class FileStorageService {
         }
         return databases;
     }
-
-
 
     public List<Document> loadDocumentsFromDirectory(String databaseName) {
         Path dbPath = Paths.get(basePath, databaseName);
@@ -156,5 +153,48 @@ public class FileStorageService {
 
         return users;
     }
+
+
+    public void saveIndexToFile(InvertedIndex invertedIndex){
+        String indexesDir = "indexes";
+        Path indexesPath = Paths.get(basePath, indexesDir);
+
+        // Create the directory if it does not exist
+        if (!Files.exists(indexesPath)) {
+            try {
+                Files.createDirectories(indexesPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Save the index to a file
+        File indexFile = new File(indexesPath.toString(), "inverted_index.json");
+        try {
+            objectMapper.writeValue(indexFile, invertedIndex.getIndex());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Map<String, Set<Integer>> loadIndexFromFile() {
+        String indexesDir = "indexes";
+        Path indexesPath = Paths.get(basePath, indexesDir);
+        Map<String, Set<Integer>> index = new HashMap<>();
+
+        File indexFile = new File(indexesPath.toString(), "inverted_index.json");
+
+        if (indexFile.exists()) {
+            try {
+                index = objectMapper.readValue(indexFile, new TypeReference<Map<String, Set<Integer>>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return index;
+    }
+
+
 
 }

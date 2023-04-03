@@ -1,5 +1,6 @@
 package com.example.myNoSql;
 
+import com.example.myNoSql.model.Admin;
 import com.example.myNoSql.model.Node;
 import com.example.myNoSql.model.User;
 import org.springframework.boot.context.properties.ConfigurationProperties;

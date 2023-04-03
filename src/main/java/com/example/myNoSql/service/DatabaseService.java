@@ -1,5 +1,6 @@
 package com.example.myNoSql.service;
 
+import com.example.myNoSql.InvertedIndex;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.Node;
@@ -18,11 +19,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,13 +33,16 @@ import java.util.concurrent.Executors;
 @Service
 public class DatabaseService {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseService.class);
+
     @Autowired
     FileStorageService fileStorageService;
+
+    @Autowired
+    InvertedIndex invertedIndex;
 
     private List<Database> databases;
     private ObjectMapper objectMapper;
     private String dataDirectory;
-
 
     public DatabaseService() {
         this.databases = new ArrayList<>();
@@ -73,7 +74,6 @@ public class DatabaseService {
         return CompletableFuture.completedFuture(null);
     }
 
-
     public CompletableFuture<List<Document>> getDocumentsFromDatabase(String databaseName) {
         Database db = findDatabaseByName(databaseName);
         if (db == null) {
@@ -82,7 +82,6 @@ public class DatabaseService {
 
         return CompletableFuture.completedFuture(db.getDocuments());
     }
-
 
     public Document getDocumentFromDatabase(String databaseName, Integer documentId) {
 
@@ -96,7 +95,6 @@ public class DatabaseService {
     public CompletableFuture<List<Database>> getDatabases() {
         return CompletableFuture.completedFuture(databases);
     }
-
 
     @Async
     public CompletableFuture<Void> addDocumentToDatabase(String databaseName, Document document) {
@@ -113,9 +111,11 @@ public class DatabaseService {
             JsonSchema jsonSchema = factory.getJsonSchema(db.getSchema());
             ProcessingReport report = jsonSchema.validate(document.getData());
             if (report.isSuccess()) {
+                invertedIndex.addDocument(document);
+
                 db.addDocument(document);
                 fileStorageService.saveDocumentToFile(databaseName, document);
-
+                fileStorageService.saveIndexToFile(invertedIndex);
             } else {
                 System.out.println("Document validation failed:");
                 System.out.println(report);
@@ -179,7 +179,6 @@ public class DatabaseService {
             }
         });
     }
-
 
     public boolean deleteDatabase(String databaseName) {
         // Check if the database exists

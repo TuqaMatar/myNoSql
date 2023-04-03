@@ -2,6 +2,7 @@ package com.example.myNoSql.controller;
 
 import com.example.myNoSql.BootStrapProperties;
 import com.example.myNoSql.CreateDatabaseRequest;
+import com.example.myNoSql.InvertedIndex;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.Node;
@@ -22,6 +23,8 @@ import java.util.concurrent.CompletableFuture;
 public class DatabaseController {
 
     @Autowired
+    private InvertedIndex invertedIndex;
+    @Autowired
     private FileStorageService fileStorageService;
 
     @Autowired
@@ -32,6 +35,7 @@ public class DatabaseController {
 
     @Autowired
     private BroadcastingService broadcastingService;
+
     @Value("${CONTAINER_NAME:unknown}")
     private String containerName;
 
@@ -65,6 +69,7 @@ public class DatabaseController {
     public Document getDocumentFromId(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId) {
         return databaseService.getDocumentFromDatabase(databaseName, documentId);
     }
+
     // CRUD OPERATIONS ON DOCUMENTS
 
     @PostMapping("/{databaseName}/createDocument")
@@ -73,7 +78,6 @@ public class DatabaseController {
         // Assign the affinity node
         Node affinityNode = getAffinityNode(document.getId());
         document.setAffinityNode(affinityNode);
-
         if (broadcast) {
             broadcastingService.broadcastCreateDocumentToAllContainers(databaseName, jsonContent);
         }
@@ -137,8 +141,6 @@ public class DatabaseController {
         }
         return databaseService.deleteDocumentFromDatabase(databaseName, documentId);
     }
-
-
 
     @DeleteMapping("/deleteDatabase/{databaseName}")
     public ResponseEntity<Void> deleteDatabase(@PathVariable("databaseName") String databaseName , @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast) {

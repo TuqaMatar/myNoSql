@@ -1,7 +1,6 @@
 package com.example.myNoSql.model;
-
+import com.example.myNoSql.service.DocumentIdGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Document {
@@ -12,7 +11,7 @@ public class Document {
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
 
     public Document(JsonNode data) {
-        this.id = data.hashCode();
+        this.id = DocumentIdGenerator.getInstance().getNextId();
         this.data = data;
         this.version = new AtomicInteger(0);
 
@@ -35,7 +34,6 @@ public class Document {
     public AtomicInteger getVersion() {
         return version;
     }
-
 
     public Node getAffinityNode() {
         return affinityNode;

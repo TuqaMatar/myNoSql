@@ -32,41 +32,12 @@ public class Node {
        // userNamePasswordMap.put(user.getUsername(),user.getPassword());
     }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
     public Map<String, Database> getDatabases() {
         return databases;
     }
 
-    public void setDatabases(Map<String, Database> databases) {
-        this.databases = databases;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-
-    public void removeUser(User user) {
-        users.remove(user);
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getName() {
@@ -75,5 +46,9 @@ public class Node {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

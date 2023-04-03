@@ -1,4 +1,4 @@
-package com.example.myNoSql;
+package com.example.myNoSql.model;
 
 public class Admin {
     String adminUsername;

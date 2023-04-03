@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BootStrappingNode {
     private List<Node> nodes;
     private Map<String, User> users;
-    private List<Node> nodeList;
-    private int nextNodeIndex;
+    private AtomicInteger nodeCounter = new AtomicInteger(0);
 
     public BootStrappingNode(List<String> nodeIpAddresses) {
         nodes = new ArrayList<>();
@@ -18,23 +18,7 @@ public class BootStrappingNode {
             nodes.add(node);
         }
         this.users = new HashMap<>();
-        this.nodeList = new ArrayList<>();
-        this.nextNodeIndex = 0;
-    }
-    public Node assignNodeToUser(String userId) {
-        int nodeIndex = Math.abs(userId.hashCode()) % nodes.size();
-        return nodes.get(nodeIndex);
     }
 
-    public void addUser(User user) {
-        users.put(user.getId(), user);
-    }
 
-    public Map<String, User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Map<String, User> users) {
-        this.users = users;
-    }
-}
+  }

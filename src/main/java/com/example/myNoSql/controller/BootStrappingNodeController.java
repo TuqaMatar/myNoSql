@@ -61,9 +61,9 @@ public class BootStrappingNodeController {
                         .body(null);
             }
         }
+
         // Assign the new user to a node using round-robin load balancing algorithm
         Node assignedNode = nodes.get(nodeCounter.getAndIncrement() % nodes.size());
-        newUser.setAssignedNode(assignedNode.getName());
         newUser.setId(UUID.randomUUID().toString());
         newUser.setPort(assignedNode.getPort());
         assignedNode.addUser(newUser);
