@@ -18,6 +18,7 @@ public class BootStrapProperties {
     private List<String> nodeIPs;
     private List<Integer> ports ;
     private Admin admin;
+    private int containerPort ;
 
     // Getters and setters
 
@@ -60,5 +61,13 @@ public class BootStrapProperties {
 
     public void setPorts(List<Integer> ports) {
         this.ports = ports;
+    }
+
+    public int getContainerPort() {
+        return containerPort;
+    }
+
+    public void setContainerPort(int containerPort) {
+        this.containerPort = containerPort;
     }
 }
