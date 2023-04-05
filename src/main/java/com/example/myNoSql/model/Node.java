@@ -12,14 +12,8 @@ public class Node {
     private int port;
     private List<User> users;
 
-    private Map<String, Database> databases;
-    private Map<String , String> userNamePasswordMap;
-
-
     public Node( String ipAddress) {
         this.ipAddress = ipAddress;
-        this.databases = new HashMap<>();
-        this.userNamePasswordMap = new HashMap<>();
         this.users = new ArrayList<>();
     }
 
@@ -30,10 +24,6 @@ public class Node {
     public void addUser(User user) {
         users.add(user);
        // userNamePasswordMap.put(user.getUsername(),user.getPassword());
-    }
-
-    public Map<String, Database> getDatabases() {
-        return databases;
     }
 
     public int getPort() {

@@ -45,10 +45,39 @@ services:
     volumes:
       - my-nosql-db-data:/app/data
 
+  node-3:
+    image: my-no-sql
+    networks:
+      - my_network
+    container_name: node-3
+    ports:
+      - "8084:8080"
+    environment:
+      - NODE_TYPE=NODE
+      - BOOTSTRAP_NODE_HOST=bootstrap-node
+      - BOOTSTRAP_NODE_PORT=8080
+      - CONTAINER_NAME=node-3
+    volumes:
+      - my-nosql-db-data:/app/data
+
+  node-4:
+    image: my-no-sql
+    networks:
+      - my_network
+    container_name: node-4
+    ports:
+      - "8085:8080"
+    environment:
+      - NODE_TYPE=NODE
+      - BOOTSTRAP_NODE_HOST=bootstrap-node
+      - BOOTSTRAP_NODE_PORT=8080
+      - CONTAINER_NAME=node-4
+    volumes:
+      - my-nosql-db-data:/app/data
+
 networks:
   my_network:
     driver: bridge
 
 volumes:
   my-nosql-db-data:
-

@@ -24,7 +24,7 @@ public class MyNoSqlApplication {
 
 	@Bean
 	public BootStrappingNode bootstrapNode() {
-		List<String> nodeIpAddresses = Arrays.asList("192.168.1.2", "192.168.1.3", "192.168.1.4"); // Replace with actual IP addresses
+		List<String> nodeIpAddresses = Arrays.asList("192.168.1.1" , "192.168.1.2", "192.168.1.3", "192.168.1.4");
 		return new BootStrappingNode(nodeIpAddresses);
 	}
 	@Bean
