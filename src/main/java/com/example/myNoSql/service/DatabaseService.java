@@ -27,8 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class DatabaseService {
@@ -41,13 +39,9 @@ public class DatabaseService {
     InvertedIndexService invertedIndexService;
 
     private List<Database> databases;
-    private ObjectMapper objectMapper;
-    private String dataDirectory;
 
     public DatabaseService() {
         this.databases = new ArrayList<>();
-        this.objectMapper = new ObjectMapper();
-        this.dataDirectory = "./data";
     }
 
     @PostConstruct

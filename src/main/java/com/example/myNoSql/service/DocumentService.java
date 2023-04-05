@@ -74,8 +74,6 @@ public class DocumentService {
         return db.getDocumentMap().get(documentId);
     }
 
-
-
     @Async
     public CompletableFuture<Void> addDocumentToDatabase(String databaseName, Document document) {
         logger.info("Processing addDocumentToDatabase request in thread: {}", Thread.currentThread().getName());

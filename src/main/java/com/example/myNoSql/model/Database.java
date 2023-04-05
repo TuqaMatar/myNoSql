@@ -1,11 +1,6 @@
 package com.example.myNoSql.model;
-
-import com.example.myNoSql.service.DocumentIdGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.*;
-
 import static java.util.stream.Collectors.toList;
 
 public class Database {
