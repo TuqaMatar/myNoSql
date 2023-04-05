@@ -20,5 +20,4 @@ public class BootStrappingNode {
         this.users = new HashMap<>();
     }
 
-
   }

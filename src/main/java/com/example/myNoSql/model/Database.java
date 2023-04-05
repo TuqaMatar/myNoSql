@@ -42,7 +42,7 @@ public class Database {
 
         while (!successfulUpdate) {
             successfulUpdate = updateDocumentIfVersionsMatch(documentId ,document);
-
+            System.out.println("Successful update" + successfulUpdate);
             if (!successfulUpdate) {
                 // to reduce the contention between multiple threads
                 try {
@@ -57,9 +57,11 @@ public class Database {
 
     public boolean updateDocumentIfVersionsMatch(Integer documentId, Document document) {
         synchronized (this) {
+
+            System.out.println(document.getVersion().get()  + " " + documents.get(documentId).getVersion().get());
             if (Objects.equals(document.getVersion().get(), documents.get(documentId).getVersion().get())) {
                 documents.remove(documentId);
-                documents.put(document.getId(), document);
+                documents.put(documentId, document);
                 documents.get(documentId).getVersion().incrementAndGet();
 
                 return true;

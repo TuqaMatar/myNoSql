@@ -1,6 +1,6 @@
 package com.example.myNoSql.service;
 
-import com.example.myNoSql.InvertedIndex;
+import com.example.myNoSql.Constants;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.Node;
@@ -38,7 +38,7 @@ public class DatabaseService {
     FileStorageService fileStorageService;
 
     @Autowired
-    InvertedIndex invertedIndex;
+    InvertedIndexService invertedIndexService;
 
     private List<Database> databases;
     private ObjectMapper objectMapper;
@@ -111,11 +111,11 @@ public class DatabaseService {
             JsonSchema jsonSchema = factory.getJsonSchema(db.getSchema());
             ProcessingReport report = jsonSchema.validate(document.getData());
             if (report.isSuccess()) {
-                invertedIndex.addDocument(document);
+                invertedIndexService.addDocument(document);
 
                 db.addDocument(document);
                 fileStorageService.saveDocumentToFile(databaseName, document);
-                fileStorageService.saveIndexToFile(invertedIndex);
+                fileStorageService.saveIndexToFile(invertedIndexService);
             } else {
                 System.out.println("Document validation failed:");
                 System.out.println(report);
@@ -142,16 +142,6 @@ public class DatabaseService {
         return CompletableFuture.completedFuture(null);
     }
 
-    @Async
-    public CompletableFuture<Void> updateDocumentFromDatabase(String databaseName, Integer documentId, Document document) {
-        logger.info("Processing updateDocumentFromDatabase request in thread: {}", Thread.currentThread().getName());
-        Database db = findDatabaseByName(databaseName);
-        if (db == null) {
-            throw new RuntimeException("Database not found");
-        }
-        db.updateDocument(documentId, document);
-        return CompletableFuture.completedFuture(null);
-    }
 
     public Database findDatabaseByName(String databaseName) {
         for (Database db : databases) {
@@ -160,24 +150,6 @@ public class DatabaseService {
             }
         }
         return null;
-    }
-
-    public void redirectToAffinityNode(String databaseName, Integer documentId, JsonNode jsonContent, Node affinityNode) {
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        executor.submit(() -> {
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("X-Redirected", "true"); // Add custom header
-                HttpEntity<JsonNode> entity = new HttpEntity<>(jsonContent, headers); // Pass the custom header
-
-                String url = "http://" + affinityNode.getName() + ":" + "8080" + "/api/db/" + databaseName + "/updateDocumentFromRedirect/" + documentId + "?broadcast=true&redirect=false";
-                System.out.println("re-directing to : " + url);
-                restTemplate.exchange(url, HttpMethod.POST, entity, Void.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     public boolean deleteDatabase(String databaseName) {

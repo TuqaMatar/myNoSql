@@ -1,8 +1,6 @@
 package com.example.myNoSql.service;
 
-import com.example.myNoSql.InvertedIndex;
 import com.example.myNoSql.model.Database;
-import com.example.myNoSql.Constants;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.User;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -155,7 +153,7 @@ public class FileStorageService {
     }
 
 
-    public void saveIndexToFile(InvertedIndex invertedIndex){
+    public void saveIndexToFile(InvertedIndexService invertedIndexService){
         String indexesDir = "indexes";
         Path indexesPath = Paths.get(basePath, indexesDir);
 
@@ -171,7 +169,7 @@ public class FileStorageService {
         // Save the index to a file
         File indexFile = new File(indexesPath.toString(), "inverted_index.json");
         try {
-            objectMapper.writeValue(indexFile, invertedIndex.getIndex());
+            objectMapper.writeValue(indexFile, invertedIndexService.getIndex());
         } catch (IOException e) {
             e.printStackTrace();
         }

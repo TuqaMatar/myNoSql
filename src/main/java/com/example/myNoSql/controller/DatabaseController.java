@@ -2,7 +2,7 @@ package com.example.myNoSql.controller;
 
 import com.example.myNoSql.BootStrapProperties;
 import com.example.myNoSql.CreateDatabaseRequest;
-import com.example.myNoSql.InvertedIndex;
+import com.example.myNoSql.service.InvertedIndexService;
 import com.example.myNoSql.model.Database;
 import com.example.myNoSql.model.Document;
 import com.example.myNoSql.model.Node;
@@ -19,11 +19,11 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/api/db")
+@RequestMapping("/api/database")
 public class DatabaseController {
 
     @Autowired
-    private InvertedIndex invertedIndex;
+    private InvertedIndexService invertedIndexService;
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -70,77 +70,6 @@ public class DatabaseController {
         return databaseService.getDocumentFromDatabase(databaseName, documentId);
     }
 
-    // CRUD OPERATIONS ON DOCUMENTS
-
-    @PostMapping("/{databaseName}/createDocument")
-    public CompletableFuture<Void> createDocument(@PathVariable("databaseName") String databaseName, @RequestBody JsonNode jsonContent, @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast) {
-        Document document = new Document(jsonContent);
-        // Assign the affinity node
-        Node affinityNode = getAffinityNode(document.getId());
-        document.setAffinityNode(affinityNode);
-        if (broadcast) {
-            broadcastingService.broadcastCreateDocumentToAllContainers(databaseName, jsonContent);
-        }
-
-        return databaseService.addDocumentToDatabase(databaseName, document);
-    }
-
-    @PostMapping("/{databaseName}/updateDocument/{documentId}")
-    public CompletableFuture<Void> updateDocument(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId,
-                                                  @RequestBody JsonNode jsonContent, @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast,
-                                                  @RequestHeader(value = "redirect", defaultValue = "true") boolean redirected) {
-        Document newDocument = new Document(jsonContent);
-
-        // Check if the current node has affinity with the document
-        Document oldDocument = databaseService.getDocumentFromDatabase(databaseName, documentId);
-        newDocument.setAffinityNode(oldDocument.getAffinityNode());
-        System.out.println("redirected value : " + redirected);
-
-        if (!isCurrentNodePort(oldDocument.getAffinityNode())) {
-            // Redirect the request to the affinity node
-            System.out.println("IS NOT AFFINITY");
-            databaseService.redirectToAffinityNode(databaseName, documentId, jsonContent, oldDocument.getAffinityNode());
-            return CompletableFuture.completedFuture(null); // Return immediately after redirecting
-        }
-
-        System.out.println("IS  AFFINITY");
-
-        if (broadcast) {
-            broadcastingService.broadcastUpdateDocumentToAllContainers(databaseName, documentId, jsonContent);
-        }
-
-        return databaseService.updateDocumentFromDatabase(databaseName, documentId, newDocument);
-    }
-
-    @PostMapping("/{databaseName}/updateDocumentFromRedirect/{documentId}")
-    public CompletableFuture<Void> updateDocumentFromRedirect(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId,
-                                                              @RequestBody JsonNode jsonContent, @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast, @RequestHeader(value = "redirect", defaultValue = "true") boolean redirected) {
-        Document newDocument = new Document(jsonContent);
-        // Check if the current node has affinity with the document
-        Document oldDocument = databaseService.getDocumentFromDatabase(databaseName, documentId);
-        newDocument.setAffinityNode(oldDocument.getAffinityNode());
-
-        System.out.println("IN  AFFINITY");
-
-        if (broadcast) {
-            broadcastingService.broadcastUpdateDocumentToAllContainers(databaseName, documentId, jsonContent);
-        }
-        return databaseService.updateDocumentFromDatabase(databaseName, documentId, newDocument);
-    }
-
-    private boolean isCurrentNodePort(Node affinityNode) {
-        System.out.println("affinity node : " + affinityNode.getName() + " container name: " + containerName);
-        return affinityNode.getName().equals(containerName);
-    }
-
-    @PostMapping("/{databaseName}/deleteDocument/{documentId}")
-    public CompletableFuture<Void> deleteDocument(@PathVariable("databaseName") String databaseName, @PathVariable("documentId") Integer documentId, @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast) {
-
-        if (broadcast) {
-            broadcastingService.broadcastDeleteDocumentToAllContainers(databaseName, documentId);
-        }
-        return databaseService.deleteDocumentFromDatabase(databaseName, documentId);
-    }
 
     @DeleteMapping("/deleteDatabase/{databaseName}")
     public ResponseEntity<Void> deleteDatabase(@PathVariable("databaseName") String databaseName , @RequestParam(value = "broadcast", defaultValue = "true") boolean broadcast) {
@@ -155,16 +84,5 @@ public class DatabaseController {
         }
     }
 
-
-    private Node getAffinityNode(Integer documentId) {
-        List<Node> nodes = bootstrapProperties.getNodes();
-        int numberOfNodes = nodes.size();
-
-        // Determine the affinity node based on the document ID
-        int affinityIndex = Math.abs(documentId % numberOfNodes);
-
-        // Return the affinity node's address
-        return nodes.get(affinityIndex);
-    }
 }
 

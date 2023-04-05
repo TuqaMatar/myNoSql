@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
-@RequestMapping("/bootstrap")
+@RequestMapping("/api/bootstrap")
 
 public class BootStrappingNodeController {
     @Autowired
@@ -54,6 +54,11 @@ public class BootStrappingNodeController {
     public ResponseEntity<User> registerUser(@RequestBody User newUser) {
         List<Node> nodes = bootstrapProperties.getNodes();
 
+        System.out.println("NODES");
+        for(Node node : nodes)
+        {
+            System.out.println(node.getName());
+        }
         // Check if the username is already in use
         for (User user : users) {
             if (user.getUsername().equals(newUser.getUsername())) {
@@ -64,6 +69,7 @@ public class BootStrappingNodeController {
 
         // Assign the new user to a node using round-robin load balancing algorithm
         Node assignedNode = nodes.get(nodeCounter.getAndIncrement() % nodes.size());
+        newUser.setAssignedNode(assignedNode.getName());
         newUser.setId(UUID.randomUUID().toString());
         newUser.setPort(assignedNode.getPort());
         assignedNode.addUser(newUser);

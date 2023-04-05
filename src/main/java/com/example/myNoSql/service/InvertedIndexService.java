@@ -1,4 +1,4 @@
-package com.example.myNoSql;
+package com.example.myNoSql.service;
 
 import com.example.myNoSql.model.Document;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,7 +8,7 @@ import java.util.*;
 
 
 @Service
-public class InvertedIndex {
+public class InvertedIndexService {
     private Map<String, Set<Integer>> index = new HashMap<>();
 
     public void addDocument(Document document) {

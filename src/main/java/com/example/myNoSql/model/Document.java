@@ -10,11 +10,10 @@ public class Document {
     private Node affinityNode;
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger(0);
 
-    public Document(JsonNode data) {
-        this.id = DocumentIdGenerator.getInstance().getNextId();
+    public Document(JsonNode data, Integer id) {
+        this.id = (id == null) ? DocumentIdGenerator.getInstance().getNextId() : id;
         this.data = data;
         this.version = new AtomicInteger(0);
-
     }
     public Document(){}
 
@@ -41,5 +40,9 @@ public class Document {
 
     public void setAffinityNode(Node affinityNode) {
         this.affinityNode = affinityNode;
+    }
+
+    public void setVersion(AtomicInteger version) {
+        this.version = version;
     }
 }

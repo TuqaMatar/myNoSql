@@ -77,16 +77,11 @@ public class NodeController {
         System.out.println("here");
         if (authService.authenticate(user.getUsername(), user.getPassword()) == null)
             return ResponseEntity.ok("unauthenticated");
-        User loggedUser = userService.getUsers().get(user.getUsername());
-//        if(loggedUser.getAssignedNode() !=containerName)
-//            return ResponseEntity.ok("unauthorized");
-
         return ResponseEntity.ok("authenticated");
     }
 
     @PostMapping("/addUser")
     public void addUser(@RequestBody User user) {
-
         fileStorageService.saveUserToFile(user);
         authService.registerUser(user);
     }
